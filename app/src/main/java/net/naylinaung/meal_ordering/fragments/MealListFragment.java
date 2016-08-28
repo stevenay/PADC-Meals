@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -47,7 +50,7 @@ public class MealListFragment extends Fragment {
     }
 
     private static final String BARG_COLUMN_COUNT = "column_count";
-    public static COLUMN_COUNT ColumnCount = COLUMN_COUNT.ONE;
+    private COLUMN_COUNT columnCount = COLUMN_COUNT.ONE;
 
     private MealAdapter mMealAdapter;
     private MealViewHolder.ControllerMealItem controllerMealItem;
@@ -56,8 +59,7 @@ public class MealListFragment extends Fragment {
         MealListFragment fragment = new MealListFragment();
         Bundle bundle = new Bundle();
 
-        ColumnCount = columnCount;
-        bundle.putInt(BARG_COLUMN_COUNT, columnCount.getNumVal());
+        bundle.putSerializable(BARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -90,16 +92,35 @@ public class MealListFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_meal_list, container, false);
         ButterKnife.bind(this, v);
 
+        setHasOptionsMenu(true);
+
         /*MealModel.getInstance().loadMeals();*/
         List<MealVO> mealList = MealModel.getInstance().getMealList();
         mMealAdapter = new MealAdapter(mealList, controllerMealItem);
         rvMeals.setAdapter(mMealAdapter);
 
         Bundle bundle = getArguments();
-        int gridColumnSpanCount = (bundle != null) ? bundle.getInt(BARG_COLUMN_COUNT) : 1;
-        rvMeals.setLayoutManager(new GridLayoutManager(getContext(), gridColumnSpanCount));
+        COLUMN_COUNT columnCount = (bundle != null) ? (COLUMN_COUNT) bundle.getSerializable(BARG_COLUMN_COUNT) : COLUMN_COUNT.ONE;
 
+        setupLayout(columnCount);
         return v;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_two_columns: {
+                columnCount = (columnCount == COLUMN_COUNT.ONE) ? COLUMN_COUNT.TWO : COLUMN_COUNT.ONE;
+                setupLayout(this.columnCount);
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setupLayout(COLUMN_COUNT gridColumnSpanCount) {
+        rvMeals.setLayoutManager(new GridLayoutManager(getContext(), gridColumnSpanCount.getNumVal()));
     }
 
     public void onEventMainThread(DataEvent.MealDataLoadedEvent event) {

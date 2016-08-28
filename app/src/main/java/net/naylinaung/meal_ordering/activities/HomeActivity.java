@@ -67,26 +67,6 @@ public class HomeActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
 
-        switch (id) {
-            case R.id.action_settings:
-                return true;
-            case R.id.action_two_columns:
-                MealListFragment.COLUMN_COUNT columnCount;
-                if (MealListFragment.ColumnCount == MealListFragment.COLUMN_COUNT.ONE) {
-                    columnCount = MealListFragment.COLUMN_COUNT.TWO;
-                    item.setIcon(R.drawable.ic_fullscreen_white_24dp);
-                } else{
-                    columnCount = MealListFragment.COLUMN_COUNT.ONE;
-                    item.setIcon(R.drawable.ic_fullscreen_exit_white_24dp);
-                }
-
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fl_container, MealListFragment.newInstance(columnCount))
-                        .commit();
-
-                return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 

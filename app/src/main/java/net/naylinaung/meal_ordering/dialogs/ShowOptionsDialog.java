@@ -34,9 +34,14 @@ public class ShowOptionsDialog extends DialogFragment {
         // Create the AlertDialog object and return it
         AlertDialog dialog = builder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        WindowManager.LayoutParams wmlp = dialog.getWindow().getAttributes();
+        WindowManager.LayoutParams wmlp = new WindowManager.LayoutParams();
 
+        Window window = dialog.getWindow();
+        wmlp.width = WindowManager.LayoutParams.MATCH_PARENT;
         wmlp.gravity = Gravity.BOTTOM | Gravity.CENTER;
+        wmlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        window.setAttributes(wmlp);
         return dialog;
     }
 }
